@@ -10,6 +10,31 @@ window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => logoOverlay.remove(), 1200);
     }, 1800);
 
+    // Navbar minimalista: expand-menu para mobile
+    const expandBtn = document.querySelector('.expand-menu');
+    const navList = document.querySelector('.nav-list');
+    function toggleNav() {
+        navList.classList.toggle('show');
+    }
+    if (expandBtn) {
+        expandBtn.addEventListener('click', toggleNav);
+    }
+    function handleResizeNav() {
+        if (window.innerWidth <= 700) {
+            expandBtn.style.display = 'inline-block';
+            navList.style.display = navList.classList.contains('show') ? 'flex' : 'none';
+            navList.style.flexDirection = 'column';
+            navList.style.gap = '12px';
+        } else {
+            expandBtn.style.display = 'none';
+            navList.style.display = 'flex';
+            navList.style.flexDirection = 'row';
+            navList.classList.remove('show');
+        }
+    }
+    window.addEventListener('resize', handleResizeNav);
+    handleResizeNav();
+
     // Animação dos cards de personagens
     animateCharacterCards();
 
@@ -167,40 +192,23 @@ function showGreeting() {
 }
 
 function showCookieBanner() {
-  if (!getCookie('cookiesAceitos')) {
-    const banner = document.createElement('div');
-    banner.id = 'cookie-banner';
-    banner.style = `
-      position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%);
-      background: #222; color: #eee; padding: 12px 20px; border-radius: 8px;
-      font-family: Arial, sans-serif; font-size: 14px; max-width: 320px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.6); display: flex; flex-direction: column;
-      gap: 8px; z-index: 9999;
-    `;
-    banner.innerHTML = `
-      <div>Este site usa cookies para melhorar sua experiência.</div>
-      <input type="text" id="username-input" placeholder="Digite seu nome" style="padding:6px;border-radius:5px;border:none;" />
-      <button id="accept-btn" style="
-        background: #4caf50; border: none; padding: 8px;
-        border-radius: 5px; color: white; cursor: pointer; font-weight: 600;
-      ">Aceitar</button>
-    `;
-    document.body.appendChild(banner);
-
-    document.getElementById('accept-btn').onclick = () => {
-      const username = document.getElementById('username-input').value.trim();
-      if (username) setCookie('username', username, 30);
-      setCookie('cookiesAceitos', 'true', 365);
-      localStorage.setItem('lastVisit', new Date().toISOString());
-      banner.remove();
-      showGreeting();
-    };
-  } else {
-    showGreeting();
-  }
+    if (!getCookie('cookiesAceitos')) {
+        const banner = document.createElement('div');
+        banner.id = 'cookie-banner';
+        banner.innerHTML = `
+            <span>Este site usa cookies para melhorar sua experiência.</span>
+            <button id="accept-btn" style="background: #3fa7ff; border: none; padding: 8px 18px; border-radius: 8px; color: #181c2b; cursor: pointer; font-weight: 600;">Aceitar</button>
+        `;
+        document.body.appendChild(banner);
+        document.getElementById('accept-btn').onclick = () => {
+            setCookie('cookiesAceitos', 'true', 365);
+            localStorage.setItem('lastVisit', new Date().toISOString());
+            banner.remove();
+        };
+    }
 }
 
 window.onload = () => {
-  localStorage.setItem('pageLoadTime', new Date().toISOString());
-  showCookieBanner();
+    localStorage.setItem('pageLoadTime', new Date().toISOString());
+    showCookieBanner();
 };
