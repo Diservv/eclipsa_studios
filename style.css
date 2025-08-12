@@ -1,4 +1,6 @@
 .dev-timeline {
+    padding: auto;
+    margin: auto;
     display: flex;
     gap: 32px;
     justify-content: center;
